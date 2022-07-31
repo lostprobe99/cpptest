@@ -1,5 +1,5 @@
 [requires]
-catch2/3.0.1
+fmt/9.0.0
 
 [generators]
 cmake
