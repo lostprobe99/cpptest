@@ -17,12 +17,21 @@ include_directories(${INC})
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
+# add_subdirectory(src/asio)
+include_directories(
+    src
+    src/asio
+)
+
 # file(GLOB_RECURSE sources ${CMAKE_CURRENT_SOURCE_DIR} *.cpp *.c)
 aux_source_directory(src sources)
+aux_source_directory(src/asio ASIO)
+list(APPEND sources ${ASIO})
 
-message(STATUS "Found ${sources} source files\n")
+# message(STATUS "Found ${sources} source files\n")
 
 foreach(main IN LISTS sources)
+    message(STATUS "Found source files ${main}")
     get_filename_component(mainname ${main} NAME_WE)
     add_executable(${mainname} ${main})
     if(WIN32)
