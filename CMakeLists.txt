@@ -7,7 +7,6 @@ if(MSVC)
     add_compile_options("$<$<C_COMPILER_ID:MSVC>:/source-charset:utf-8>")
 endif()
 
-set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
 set(INC ./inc)
@@ -27,11 +26,17 @@ include_directories(
 aux_source_directory(src sources)
 aux_source_directory(src/asio ASIO)
 list(APPEND sources ${ASIO})
+aux_source_directory(src/multithreading THREADING)
+list(APPEND sources ${THREADING})
+# aux_source_directory(src/meta-programing METAP)
+# list(APPEND sources ${METAP})
+aux_source_directory(src/http HTTP)
+list(APPEND sources ${HTTP})
 
 # message(STATUS "Found ${sources} source files\n")
 
 foreach(main IN LISTS sources)
-    message(STATUS "Found source files ${main}")
+    message(STATUS "Found source file ${main}")
     get_filename_component(mainname ${main} NAME_WE)
     add_executable(${mainname} ${main})
     if(WIN32)
@@ -45,6 +50,8 @@ endforeach()
 enable_testing()
 add_subdirectory(test)
 aux_source_directory(test tests)
+aux_source_directory(test/meta-programing META)
+list(APPEND tests ${META})
 
 # 将 test 下的每一个文件都添加为测试
 foreach(main IN LISTS tests)
