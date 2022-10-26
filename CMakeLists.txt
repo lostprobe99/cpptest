@@ -9,7 +9,7 @@ endif()
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(INC ./inc)
+set(INC ./inc src/util)
 
 include_directories(${INC})
 
@@ -28,10 +28,12 @@ aux_source_directory(src/asio ASIO)
 list(APPEND sources ${ASIO})
 aux_source_directory(src/multithreading THREADING)
 list(APPEND sources ${THREADING})
-# aux_source_directory(src/meta-programing METAP)
-# list(APPEND sources ${METAP})
+aux_source_directory(src/meta-programing METAP)
+list(APPEND sources ${METAP})
 aux_source_directory(src/http HTTP)
 list(APPEND sources ${HTTP})
+aux_source_directory(test TEST)
+list(APPEND sources ${TEST})
 
 # message(STATUS "Found ${sources} source files\n")
 
@@ -43,20 +45,5 @@ foreach(main IN LISTS sources)
         # 连接 winsock2.lib
         target_link_libraries(${mainname} wsock32 ws2_32)
     endif()
-    target_link_libraries(${mainname} ${CONAN_LIBS})
-endforeach()
-
-# 开启测试
-enable_testing()
-add_subdirectory(test)
-aux_source_directory(test tests)
-aux_source_directory(test/meta-programing META)
-list(APPEND tests ${META})
-
-# 将 test 下的每一个文件都添加为测试
-foreach(main IN LISTS tests)
-    get_filename_component(mainname ${main} NAME_WE)
-    add_executable(${mainname} ${main})
-    add_test(NAME ${mainname} COMMAND ${mainname})  # COMMAND 要和 executable 的名字对应
     target_link_libraries(${mainname} ${CONAN_LIBS})
 endforeach()
