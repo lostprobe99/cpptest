@@ -8,7 +8,9 @@
 
 #pragma once
 
+#if defined _Win32 || _Win64
 #include <sdkddkver.h>
+#endif
 
 #include <boost/asio.hpp>
 

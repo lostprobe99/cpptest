@@ -8,6 +8,8 @@
 #include "util/Timer.hpp"
 #include <iostream>
 #include <cmath>
+#include <cassert>
+#include <cstdlib>
 
 static int global_c = 0;
 
@@ -47,7 +49,7 @@ void prime_print(int n)
     printf("%d\n", n);
 }
 
-void prime_count(int n)
+inline void prime_count(int n)
 {
     global_c++;
 }
@@ -64,25 +66,30 @@ void prime_gen(int c, bool (*is_prime)(int n), void (*prime_handler)(int n) = pr
 using namespace probe;
 int main(int argc, char const *argv[])
 {
+    assert(argc == 2);
+
     Timer timer;
 
-printf("==============\n");
+    int c = atoi(argv[1]);
+
+    printf("limit is %d\n", c);
+
     timer.reset();
-    prime_gen(1000, is_prime1, prime_count);
+    prime_gen(c, is_prime1, prime_count);
     printf("total found %d\n", global_c);
-    printf("%lld us\n", timer.elapsed<Timer::Unit::us>());
+    printf("%lld ms\n", timer.elapsed<Timer::Unit::ms>());
 
     global_c = 0;
     timer.reset();
-    prime_gen(1000, is_prime2, prime_count);
+    prime_gen(c, is_prime2, prime_count);
     printf("total found %d\n", global_c);
-    printf("%lld us\n", timer.elapsed<Timer::Unit::us>());
+    printf("%lld ms\n", timer.elapsed<Timer::Unit::ms>());
 
     global_c = 0;
     timer.reset();
-    prime_gen(1000, is_prime3, prime_count);
+    prime_gen(c, is_prime3, prime_count);
     printf("total found %d\n", global_c);
-    printf("%lld us\n", timer.elapsed<Timer::Unit::us>());
+    printf("%lld ms\n", timer.elapsed<Timer::Unit::ms>());
 printf("==============\n");
 
     return 0;
