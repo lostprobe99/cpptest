@@ -24,19 +24,18 @@ std::mutex _mtx_product;
 void producer(BlockQueue& q)
 {
     fmt::print("[{}] running\n", __FUNCTION__);
-    while(dbg(c < MAX_PRODUCT_NUM))
+    while(c < MAX_PRODUCT_NUM)
     {
         std::lock_guard lock(_mtx_product);
         fmt::print(fmt::fg(fmt::terminal_color::bright_green), "[thread {}] produced {}\n", std::this_thread::get_id(), c);
         q.push(c++);
-    fmt::print(fmt::fg(fmt::terminal_color::red), "in [{}] task size: {}\n",__FUNCTION__, q.size());
     }
 }
 
 void consumer(BlockQueue& q)
 {
     fmt::print("[{}] running\n", __FUNCTION__);
-    while(dbg(!q.empty()))
+    while(true)
     {
         fmt::print(fmt::fg(fmt::terminal_color::red), "in [{}] task size: {}\n",__FUNCTION__, q.size());
         auto x = q.pop();
@@ -49,10 +48,11 @@ int main()
     std::vector<std::thread> tpool;
     BlockQueue tasks(MAX_TASK_NUM);
 
-    tpool.emplace_back(consumer, std::ref(tasks));
     tpool.emplace_back(producer, std::ref(tasks));
-    // tpool.emplace_back(producer, std::ref(tasks));
-    // tpool.emplace_back(producer, std::ref(tasks));
+    tpool.emplace_back(producer, std::ref(tasks));
+    tpool.emplace_back(producer, std::ref(tasks));
+    tpool.emplace_back(consumer, std::ref(tasks));
+    tpool.emplace_back(consumer, std::ref(tasks));
 
     for(auto&& e : tpool)
         e.join();

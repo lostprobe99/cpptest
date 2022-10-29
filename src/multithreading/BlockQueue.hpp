@@ -7,8 +7,6 @@
 #include <fmt/core.h>
 #include <fmt/color.h>
 
-#include <dbg.h>
-
 class BlockQueue
 {
 public:
@@ -40,25 +38,21 @@ public:
     void push(const int& e)
     {
         std::unique_lock lock(_mtx);
-        while(dbg(is_full())) {    // 队列满时等待
-fmt::print(fmt::fg(fmt::terminal_color::red), "[{}:{} ({})] cv_full.wait\n", __FILE__, __LINE__, __FUNCTION__);
+        while(is_full()) {    // 队列满时等待
             _cv_full.wait(lock);
         }
-        dbg(_q.emplace(e));
-fmt::print(fmt::fg(fmt::terminal_color::red), "[{}:{} ({})] cv_empty.notify_all\n", __FILE__, __LINE__, __FUNCTION__);
+        _q.emplace(e);
         _cv_empty.notify_all();
     }
 
     int pop()
     {
         std::unique_lock lock(_mtx);
-        while(dbg(is_empty())) {    // 无数据时等待
-fmt::print(fmt::fg(fmt::terminal_color::red), "[{}:{} ({})] cv_empty.wait\n", __FILE__, __LINE__, __FUNCTION__);
+        while(is_empty()) {    // 无数据时等待
             _cv_empty.wait(lock);
         }
         auto ret = _q.front();
         _q.pop();
-fmt::print(fmt::fg(fmt::terminal_color::red), "[{}:{} ({})] cv_full.notify_all\n", __FILE__, __LINE__, __FUNCTION__);
         _cv_full.notify_all();
         return ret;
     }
