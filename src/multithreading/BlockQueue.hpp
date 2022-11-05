@@ -3,17 +3,16 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
+#include <cassert>
 
-#include <fmt/core.h>
-#include <fmt/color.h>
-
+template<typename T>
 class BlockQueue
 {
 public:
     using size_type = std::queue<int>::size_type;
 
 private:
-    std::queue<int> _q;
+    std::queue<T> _q;
     mutable std::mutex _mtx;
     std::condition_variable _cv_full, _cv_empty;
     int _capacity;
@@ -35,12 +34,13 @@ public:
 
     ~BlockQueue() {}
 
-    void push(const int& e)
+    void push(const T& e)
     {
         std::unique_lock lock(_mtx);
         while(is_full()) {    // 队列满时等待
             _cv_full.wait(lock);
         }
+        assert(!is_full());
         _q.emplace(e);
         _cv_empty.notify_all();
     }
@@ -51,6 +51,7 @@ public:
         while(is_empty()) {    // 无数据时等待
             _cv_empty.wait(lock);
         }
+        assert(!is_empty());
         auto ret = _q.front();
         _q.pop();
         _cv_full.notify_all();
