@@ -92,5 +92,7 @@ int main(int argc, char const *argv[])
     printf("%lld ms\n", timer.elapsed<Timer::Unit::ms>());
 printf("==============\n");
 
+    Timer::clock(prime_gen, c, is_prime3, prime_count);
+
     return 0;
 }

@@ -43,5 +43,21 @@ namespace probe
             auto timespan = std::chrono::steady_clock::now() - _begin;
             return std::chrono::duration_cast<TimeUnit>(timespan).count();
         }
+
+        template<typename Func, typename... Args>
+        static long long clock(Func func, Args&&... args)
+        {
+            // 检测能否进行 func(args...) 操作
+            static_assert(std::is_invocable_v<Func, Args...>, "func must be invoked with args...");
+
+            auto _begin = std::chrono::steady_clock::now();
+
+            func(args...);
+
+            auto span = std::chrono::steady_clock::now() - _begin;
+            auto c = std::chrono::duration_cast<std::chrono::milliseconds>(span).count();
+            std::cout << "Elapsed " << c << " ms\n";
+            return c;
+        }
     };
 }
