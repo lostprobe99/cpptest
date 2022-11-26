@@ -4,23 +4,37 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <thread>
 
 static int global_c = 0;
 
-template<typename Func, typename... Args>
-long long clock(Func func, Args&&... args)
+template<typename Func, typename... Args, typename Ret = std::invoke_result_t<Func, Args...>>
+auto clock(Func func, Args&&... args) -> Ret
 {
     // 检测能否进行 func(args...) 操作
     static_assert(std::is_invocable_v<Func, Args...>, "func must be invoked with args...");
 
-    auto _begin = std::chrono::steady_clock::now();
+    #define BEGIN auto _begin = std::chrono::steady_clock::now()
 
-    func(args...);
+    #define END \
+        auto diff = std::chrono::steady_clock::now() - _begin; \
+        auto c = std::chrono::duration_cast<std::chrono::milliseconds>(diff).count()
 
-    auto span = std::chrono::steady_clock::now() - _begin;
-    auto c = std::chrono::duration_cast<std::chrono::milliseconds>(span).count();
-    std::cout << "Elapsed " << std::chrono::duration_cast<std::chrono::milliseconds>(span).count() << " ms\n";
-    return c;
+    if constexpr (std::is_void_v<Ret>)
+    {
+        BEGIN;
+        func(args...);
+        END;
+        std::cout << "Elapsed " << c << " ms\n";
+    }
+    else
+    {
+        BEGIN;
+        auto ret = func(args...);
+        END;
+        std::cout << "Elapsed " << c << " ms\n";
+        return ret;
+    }
 }
 
 void dosomething()
@@ -54,10 +68,11 @@ void prime_gen(int c, bool (*is_prime)(int n), void (*prime_handler)(int n) = pr
 
 int main()
 {
-    // clock(prime_gen, 1000, is_prime1, prime_count);
-    // clock(prime_gen, 10000, is_prime1, prime_count);
-    // clock(prime_gen, 100000, is_prime1, prime_count);
-    // clock(dosomething);
+    using namespace std::chrono_literals;
+    clock(prime_gen, 1000, is_prime1, prime_count);
+    clock(prime_gen, 10000, is_prime1, prime_count);
+    clock(prime_gen, 100000, is_prime1, prime_count);
+    clock(dosomething);
     // clock(&global_c);
     std::string s = __FUNCTION__;
     std::vector<std::string> v;
@@ -65,6 +80,10 @@ int main()
         for(int i = 0; i < 0x8000; i++)
             v.emplace_back(s);
     });
+    std::cout << clock([]() {
+        std::this_thread::sleep_for(100ms);
+        return 100;
+    }) << std::endl;
 
     return 0;
 }
