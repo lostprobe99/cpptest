@@ -9,7 +9,7 @@ endif()
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(INC ./inc src/util)
+set(INC inc src/util)
 
 include_directories(${INC})
 
