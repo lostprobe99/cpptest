@@ -5,8 +5,12 @@
 
 namespace probe
 {
-    // T 是整型时启用，包括 bool, char, char16_t, char 32_t, wchar_t
-    //                  short, int, long, long long
+    /// @brief 生成一个整型随机数，包括 bool, char, char16_t, char 32_t, wchar_t, short, int, long, long long
+    /// @tparam T 整型类型
+    /// @param seed 随机数种子
+    /// @param min 随机数最小值（包含）
+    /// @param max 随机数最大值（包含）
+    /// @return 
     template <typename T, typename std::enable_if<std::is_integral_v<T>, T>::type * = nullptr>
     T rand(int64_t seed, T min, T max)
     {
