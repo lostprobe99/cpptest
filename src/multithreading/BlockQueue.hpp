@@ -9,7 +9,7 @@ template<typename T>
 class BlockQueue
 {
 public:
-    using size_type = std::queue<T>::size_type;
+    using size_type = typename std::queue<T>::size_type;
 
 private:
     std::queue<T> _q;
