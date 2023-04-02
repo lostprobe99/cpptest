@@ -6,7 +6,6 @@
  * @Brief  : 阻塞队列实现的生产消费者
  */
 #include "BlockQueue.hpp"
-#include "util/Timer.hpp"
 #include "util/rand.hpp"
 
 #include <thread>

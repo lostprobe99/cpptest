@@ -1,7 +1,6 @@
 .vscode
 build
 note
-http
 *.txt
 src/*.cpp
 null

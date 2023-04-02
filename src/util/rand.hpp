@@ -11,7 +11,7 @@ namespace probe
     /// @param min 随机数最小值（包含）
     /// @param max 随机数最大值（包含）
     /// @return 
-    template <typename T, typename std::enable_if<std::is_integral_v<T>, T>::type * = nullptr>
+    template <typename T, typename std::enable_if_t<std::is_integral_v<T>>* = nullptr>
     T rand(int64_t seed, T min, T max)
     {
     using namespace std;
@@ -20,7 +20,7 @@ namespace probe
         return u(e);
     }
 
-    template <typename T, typename std::enable_if<std::is_integral_v<T>, T>::type * = nullptr>
+    template <typename T, typename std::enable_if<std::is_integral_v<T>>::type * = nullptr>
     T rand(T min, T max)
     {
     using namespace std;
@@ -30,7 +30,7 @@ namespace probe
     }
 
     // T 是浮点时启用
-    template <typename T, typename std::enable_if_t<std::is_floating_point_v<T>, T>* = nullptr>
+    template <typename T, typename std::enable_if_t<std::is_floating_point_v<T>>* = nullptr>
     T rand(T min, T max)
     {
     using namespace std;
@@ -39,7 +39,7 @@ namespace probe
         return u(e);
     }
 
-    template <typename T, typename std::enable_if_t<std::is_floating_point_v<T>, T>* = nullptr>
+    template <typename T, typename std::enable_if_t<std::is_floating_point_v<T>>* = nullptr>
     T rand(int64_t seed, T min, T max)
     {
     using namespace std;

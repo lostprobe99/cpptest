@@ -5,7 +5,7 @@
  * @Date   : 2022/10/22 16:38
  * @Brief  : prime.cpp
  */
-#include "util/Timer.hpp"
+#include "util/Clock.hpp"
 #include <iostream>
 #include <cmath>
 #include <cassert>
@@ -68,31 +68,31 @@ int main(int argc, char const *argv[])
 {
     assert(argc == 2);
 
-    Timer timer;
+    Clock clock;
 
     int c = atoi(argv[1]);
 
     printf("limit is %d\n", c);
 
-    timer.reset();
+    clock.reset();
     prime_gen(c, is_prime1, prime_count);
     printf("total found %d\n", global_c);
-    printf("%lld ms\n", timer.elapsed<Timer::Unit::ms>());
+    printf("%lld ms\n", clock.elapsed<Clock::Unit::ms>());
 
     global_c = 0;
-    timer.reset();
+    clock.reset();
     prime_gen(c, is_prime2, prime_count);
     printf("total found %d\n", global_c);
-    printf("%lld ms\n", timer.elapsed<Timer::Unit::ms>());
+    printf("%lld ms\n", clock.elapsed<Clock::Unit::ms>());
 
     global_c = 0;
-    timer.reset();
+    clock.reset();
     prime_gen(c, is_prime3, prime_count);
     printf("total found %d\n", global_c);
-    printf("%lld ms\n", timer.elapsed<Timer::Unit::ms>());
+    printf("%lld ms\n", clock.elapsed<Clock::Unit::ms>());
 printf("==============\n");
 
-    Timer::clock(prime_gen, c, is_prime3, prime_count);
+    Clock::clock(prime_gen, c, is_prime3, prime_count);
 
     return 0;
 }
