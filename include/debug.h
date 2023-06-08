@@ -34,6 +34,9 @@
 
 #define ANSI_FMT(str, color) color str ANSI_NONE
 
+#define STR(x) #x
+#define eval(expr)  STR(expr) << ": " << expr
+
 #define Assert(cond, format, ...)                                      \
     do                                                                 \
     {                                                                  \
@@ -44,24 +47,15 @@
         }                                                              \
     } while (0)
 
-#define FATAL_EXIT(format, ...)                                                                                  \
-    do                                                                                                           \
-    {                                                                                                            \
-        fprintf(stderr, ANSI_FMT("Fatal: %s:%d: " format, ANSI_BG_RED) "\n", __FILE__, __LINE__, ##__VA_ARGS__); \
-        exit(1);                                                                                                 \
-    } while (0)
+#define panic(format, ...) Assert(0, format, ## __VA_ARGS__)
 
-#define FATAL_RET(ret, format, ...)                                                                              \
-    do                                                                                                           \
-    {                                                                                                            \
-        fprintf(stderr, ANSI_FMT("Fatal: %s:%d: " format, ANSI_BG_RED) "\n", __FILE__, __LINE__, ##__VA_ARGS__); \
-        return ret;                                                                                              \
-    } while (0)
+#define TODO() panic("please implement me")
 
-#define FATAL(format, ...)                                                                                       \
+#define FATAL(format, exit_code, ...)                                                                                       \
     do                                                                                                           \
     {                                                                                                            \
         fprintf(stderr, ANSI_FMT("Fatal: %s:%d: " format, ANSI_BG_RED) "\n", __FILE__, __LINE__, ##__VA_ARGS__); \
+        exit(exit_code);                                                                                                 \
     } while (0)
 
 #define WARN(format, ...)                                                                                          \
@@ -82,3 +76,10 @@
         fprintf(stdout, "Norm: " format "\n", ##__VA_ARGS__); \
         fflush(stdout);                                       \
     } while (0)
+
+#define REPEAT2(x) x x
+#define REPEAT4(x) REPEAT2(x) REPEAT2(x)
+#define REPEAT8(x) REPEAT4(x) REPEAT4(x)
+#define REPEAT16(x) REPEAT8(x) REPEAT8(x)
+#define REPEAT32(x) REPEAT16(x) REPEAT16(x)
+// #define REPEAT(x) REPEAT32(x)
