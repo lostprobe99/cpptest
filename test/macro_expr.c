@@ -21,7 +21,7 @@ int main(int argc, char ** argv)
 
     printf("a = %d\n", a);
 
-    errif(a == 0, FATAL("a == 0"));
+    errif(a == 0, FATAL("a == 0", 0));
     errif(a == 0, WARN("a == 0"));
     errif(a == 0, INFO("a == 0"));
     errif(a == 0, NORM("a == 0"));
